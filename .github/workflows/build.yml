@@ -1,81 +1,79 @@
-name: Advanced Master AI APK Build
+name: Master AI Production APK Build
 
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: Set up Python 3.10 Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: Set up Java JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Set up Java JDK 17 Runtime
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Cache Buildozer Global Directory
-      uses: actions/cache@v4
-      with:
-        path: ~/.buildozer
-        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('main.py') }}
-        restore-keys: |
-          ${{ runner.os }}-buildozer-
+      - name: Cache Buildozer Global Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
 
-    - name: Install System Dependencies & Compilers
-      run: |
-        sudo dpkg --add-architecture i386
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          git \
-          python3-pip \
-          python3-dev \
-          autoconf \
-          libtool \
-          pkg-config \
-          zlib1g-dev \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libffi-dev \
-          libssl-dev \
-          ant \
-          patch \
-          libstdc++6 \
-          libglu1-mesa-dev \
-          ffmpeg \
-          libsdl2-dev \
-          libsdl2-image-dev \
-          libsdl2-mixer-dev \
-          libsdl2-ttf-dev
+      - name: Install System Development Headers and C/C++ Compilers
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            build-essential \
+            git \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            pkg-config \
+            autoconf \
+            automake \
+            libtool \
+            libffi-dev \
+            libssl-dev \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libsqlite3-dev \
+            zip \
+            unzip
 
-    - name: Install Python Build Tools (Cython & Buildozer)
-      run: |
-        python -m pip install --upgrade pip
-        pip install --upgrade setuptools wheel
-        pip install --upgrade cython==0.29.36
-        pip install --upgrade buildozer
+      - name: Install Compatible Cython and Buildozer Packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade "cython==0.29.36" buildozer
 
-    - name: Build Android APK with Auto-License Acceptance
-      run: |
-        yes | buildozer -v android debug
+      - name: Execute Android APK Build with Auto-License Acceptance
+        run: |
+          yes | buildozer -v android debug
 
-    - name: Verify APK Generation
-      run: |
-        ls -la bin/
-        find bin/ -name "*.apk"
+      - name: Verify Binary Output Artifact
+        run: |
+          ls -la bin/
 
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: master-ai-apk
-        path: bin/*.apk
+      - name: Upload Compiled APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MasterAI-Debug-APK
+          path: bin/*.apk
