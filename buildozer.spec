@@ -9,6 +9,9 @@ package.name = masterai
 # (str) Package domain (needed for android packaging)
 package.domain = org.masterai
 
+# (str) Application versioning
+version = 0.1
+
 # (str) Source files where the include files are stored
 source.dir = .
 
@@ -28,12 +31,6 @@ fullscreen = 0
 # (string) Supported THR architectures
 # Supported values: arm64-v8a, armeabi-v7a, x86, x86_64
 android.archs = arm64-v8a
-
-# (int) Target Android API, should be as high as possible.
-# android.api = 33
-
-# (int) Minimum API your APK will support.
-# android.minapi = 21
 
 # (str) Android NDK version to use
 android.ndk = 25b
